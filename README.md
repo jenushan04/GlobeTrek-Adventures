@@ -141,7 +141,7 @@ globetrek/
 ## 1️⃣ Clone Repository
 
 ```bash
-git clone https://github.com/yourusername/globetrek-adventures.git
+git clone https://github.com/yourusername/globetrek-adventures.git](https://github.com/jenushan04/GlobeTrek-Adventures.git
 cd globetrek-adventures
 ```
 
