@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% load widget_tweaks humanize %}
+{% block title %}Book {{ package.title }} — GlobeTrek Adventures{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <h1><i class="bi bi-suitcase-fill"></i> Book Your Tour</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'core:home' %}">Home</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'tours:package_detail' package.slug %}">{{ package.title }}</a></li>
+                <li class="breadcrumb-item active">Book</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row g-4">
+        <!-- Booking Form -->
+        <div class="col-lg-7">
+            <div class="card p-4">
+                <h3><i class="bi bi-pencil-square text-indigo"></i> Booking Details</h3>
+                <p class="text-muted">Fill out the form to reserve your spot. Payment is on the next step.</p>
+
+                <form method="post" novalidate>
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+                        <label class="form-label">Travel Start Date <span class="text-danger">*</span></label>
+                        {{ form.travel_date|add_class:"form-control" }}
+                        {% if form.travel_date.errors %}<div class="text-danger small">{{ form.travel_date.errors.0 }}</div>{% endif %}
+                        <small class="text-muted">Available between {{ package.available_from|date:"d M Y" }} and {{ package.available_to|date:"d M Y" }}</small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Number of Travellers <span class="text-danger">*</span></label>
+                        {{ form.num_travellers|add_class:"form-control" }}
+                        {% if form.num_travellers.errors %}<div class="text-danger small">{{ form.num_travellers.errors.0 }}</div>{% endif %}
+                        <small class="text-muted">Max {{ package.max_travellers }} travellers per booking</small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Special Requests</label>
+                        {{ form.special_requests|add_class:"form-control" }}
+                        <small class="text-muted">Dietary needs, accessibility, accommodation preferences...</small>
+                    </div>
+
+                    <button type="submit" class="btn btn-indigo btn-lg w-100">
+                        <i class="bi bi-arrow-right-circle"></i> Proceed to Payment
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Summary -->
+        <div class="col-lg-5">
+            <div class="card p-4 sticky-top" style="top: 80px;">
+                <h5>Booking Summary</h5>
+                <hr>
+                {% if package.image %}
+                    <img src="{{ package.image.url }}" class="img-fluid rounded mb-3" alt="{{ package.title }}">
+                {% endif %}
+                <h6>{{ package.title }}</h6>
+                <p class="text-muted small mb-3">
+                    <i class="bi bi-geo-alt"></i> {{ package.destination.name }}, {{ package.destination.country }}<br>
+                    <i class="bi bi-clock"></i> {{ package.duration_days }} days
+                </p>
+                <hr>
+                <div class="d-flex justify-content-between mb-2">
+                    <span>Per person:</span>
+                    <strong>LKR {{ package.price|floatformat:0|intcomma }}</strong>
+                </div>
+                <div class="d-flex justify-content-between mb-2 text-muted small">
+                    <span>Includes accommodation, meals & transfers</span>
+                </div>
+                <hr>
+                <div class="alert alert-light mb-0">
+                    <i class="bi bi-info-circle text-indigo"></i>
+                    <small>Total will be calculated based on number of travellers.</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

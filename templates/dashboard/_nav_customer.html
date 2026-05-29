@@ -1,0 +1,34 @@
+{# Customer sidebar nav — included in every customer dashboard page #}
+<div class="sidebar">
+    <h6 class="mb-3">My Account</h6>
+    <ul class="nav flex-column">
+        <li class="nav-item">
+            <a href="{% url 'dashboard:customer' %}" class="nav-link {% if request.resolver_match.url_name == 'customer' %}active{% endif %}">
+                <i class="bi bi-speedometer2"></i> Dashboard
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{% url 'inquiries:my_list' %}" class="nav-link {% if request.resolver_match.app_name == 'inquiries' %}active{% endif %}">
+                <i class="bi bi-chat-square-dots"></i> My Inquiries
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{% url 'tours:package_list' %}" class="nav-link">
+                <i class="bi bi-search"></i> Browse Tours
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{% url 'accounts:profile' %}" class="nav-link {% if request.resolver_match.url_name == 'profile' %}active{% endif %}">
+                <i class="bi bi-person"></i> My Profile
+            </a>
+        </li>
+        <li>
+            <form action="{% url 'accounts:logout' %}" method="post" class="m-0 px-3 pt-2">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-outline-danger btn-sm w-100">
+                    <i class="bi bi-box-arrow-right"></i> Logout
+                </button>
+            </form>
+        </li>
+    </ul>
+</div>

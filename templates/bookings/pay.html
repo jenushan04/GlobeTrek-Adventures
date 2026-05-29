@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+{% load widget_tweaks humanize %}
+{% block title %}Make Payment — GlobeTrek Adventures{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <h1><i class="bi bi-credit-card-2-front"></i> Secure Payment</h1>
+        <p class="opacity-75 mb-0">Booking #{{ booking.reference }}</p>
+    </div>
+</div>
+
+<div class="container">
+    <div class="alert alert-info">
+        <i class="bi bi-info-circle"></i> <strong>Demo Notice:</strong> This is a mock payment page for academic purposes. No real card details are processed or stored — only the last 4 digits are kept for reference.
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-7">
+            <div class="card p-4">
+                <h4><i class="bi bi-shield-lock-fill text-success"></i> Payment Details</h4>
+
+                <form method="post" novalidate>
+                    {% csrf_token %}
+
+                    <!-- Payment Method -->
+                    <div class="mb-4">
+                        <label class="form-label">Payment Method</label>
+                        <div class="row g-2">
+                            {% for opt in form.payment_method %}
+                                <div class="col-md-4">
+                                    <label class="card p-2 d-flex align-items-center justify-content-center text-center" style="cursor: pointer;">
+                                        {{ opt.tag }}
+                                        <span class="ms-2">{{ opt.choice_label }}</span>
+                                    </label>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- Card Details -->
+                    <div class="mb-3">
+                        <label class="form-label">Cardholder Name <span class="text-danger">*</span></label>
+                        {{ form.card_holder|add_class:"form-control" }}
+                        {% if form.card_holder.errors %}<div class="text-danger small">{{ form.card_holder.errors.0 }}</div>{% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Card Number <span class="text-danger">*</span></label>
+                        {{ form.card_number|add_class:"form-control" }}
+                        {% if form.card_number.errors %}<div class="text-danger small">{{ form.card_number.errors.0 }}</div>{% endif %}
+                        <small class="text-muted">Test number: 4242 4242 4242 4242</small>
+                    </div>
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Expiry Date <span class="text-danger">*</span></label>
+                            {{ form.expiry|add_class:"form-control" }}
+                            {% if form.expiry.errors %}<div class="text-danger small">{{ form.expiry.errors.0 }}</div>{% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">CVV <span class="text-danger">*</span></label>
+                            {{ form.cvv|add_class:"form-control" }}
+                            {% if form.cvv.errors %}<div class="text-danger small">{{ form.cvv.errors.0 }}</div>{% endif %}
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-indigo btn-lg w-100 mt-4">
+                        <i class="bi bi-lock-fill"></i> Pay LKR {{ booking.total_price|floatformat:0|intcomma }} Now
+                    </button>
+                    <p class="text-center text-muted small mt-2"><i class="bi bi-shield-check"></i> 256-bit SSL encrypted &middot; Mock for demo</p>
+                </form>
+            </div>
+        </div>
+
+        <div class="col-lg-5">
+            <div class="card p-4 sticky-top" style="top: 80px;">
+                <h5>Order Summary</h5>
+                <hr>
+                <h6>{{ booking.package.title }}</h6>
+                <p class="text-muted small mb-2">
+                    <i class="bi bi-geo-alt"></i> {{ booking.package.destination.name }}<br>
+                    <i class="bi bi-calendar"></i> {{ booking.travel_date|date:"d M Y" }}<br>
+                    <i class="bi bi-people"></i> {{ booking.num_travellers }} traveller{{ booking.num_travellers|pluralize }}
+                </p>
+                <hr>
+                <div class="d-flex justify-content-between">
+                    <span>Subtotal</span>
+                    <span>LKR {{ booking.total_price|floatformat:0|intcomma }}</span>
+                </div>
+                <div class="d-flex justify-content-between text-muted small">
+                    <span>Tax</span>
+                    <span>Included</span>
+                </div>
+                <hr>
+                <div class="d-flex justify-content-between h5">
+                    <strong>Total</strong>
+                    <strong class="text-indigo">LKR {{ booking.total_price|floatformat:0|intcomma }}</strong>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

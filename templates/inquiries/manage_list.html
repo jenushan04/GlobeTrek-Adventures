@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% block title %}Manage Inquiries — GlobeTrek Staff{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row g-3">
+        <div class="col-lg-2">{% include 'dashboard/_sidebar.html' %}</div>
+        <div class="col-lg-10">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div>
+                    <h2 class="d-flex align-items-center gap-2 mb-1"><i class="bi bi-envelope-paper"></i> Customer Inquiries</h2>
+                    <p class="text-muted mb-0">Respond to customer queries promptly.</p>
+                </div>
+                <form method="get">
+                    <select name="status" class="form-select" onchange="this.form.submit()">
+                        <option value="">All Statuses</option>
+                        <option value="open" {% if status_filter == "open" %}selected{% endif %}>Open</option>
+                        <option value="in_progress" {% if status_filter == "in_progress" %}selected{% endif %}>In Progress</option>
+                        <option value="resolved" {% if status_filter == "resolved" %}selected{% endif %}>Resolved</option>
+                    </select>
+                </form>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-globetrek mb-0">
+                    <thead>
+                        <tr>
+                            <th>Subject</th>
+                            <th>From</th>
+                            <th>Status</th>
+                            <th>Replies</th>
+                            <th>Received</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for inq in inquiries %}
+                        <tr>
+                            <td><strong>{{ inq.subject }}</strong><br><small class="text-muted">{{ inq.message|truncatechars:50 }}</small></td>
+                            <td>{{ inq.name }}<br><small class="text-muted">{{ inq.email }}</small></td>
+                            <td><span class="status-badge status-{{ inq.status }}">{{ inq.get_status_display }}</span></td>
+                            <td>{{ inq.replies.count }}</td>
+                            <td>{{ inq.created_at|date:"d M Y" }}</td>
+                            <td>
+                                <a href="{% url 'inquiries:reply' inq.pk %}" class="btn btn-sm btn-indigo"><i class="bi bi-reply"></i> Reply</a>
+                                {% if inq.status != 'resolved' %}
+                                <form method="post" action="{% url 'inquiries:resolve' inq.pk %}" class="d-inline">{% csrf_token %}
+                                    <button class="btn btn-sm btn-success" title="Mark resolved" data-confirm="Mark as resolved?"><i class="bi bi-check2-all"></i></button>
+                                </form>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="6" class="text-center text-muted py-4">No inquiries yet.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

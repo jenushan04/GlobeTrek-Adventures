@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+{% block title %}My Profile — GlobeTrek Adventures{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <h1><i class="bi bi-person-circle"></i> My Profile</h1>
+        <p class="mb-0 opacity-75">Manage your personal information and account settings</p>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row g-4">
+        <div class="col-lg-4">
+            <div class="card text-center p-4">
+                {% if user.profile.profile_pic %}
+                    <img src="{{ user.profile.profile_pic.url }}" alt="Avatar" class="rounded-circle mx-auto mb-3" style="width: 120px; height: 120px; object-fit: cover;">
+                {% else %}
+                    <div class="rounded-circle bg-indigo-tint d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 120px; height: 120px;">
+                        <i class="bi bi-person-fill text-indigo" style="font-size: 4rem;"></i>
+                    </div>
+                {% endif %}
+                <h5 class="mb-0">{{ user.get_full_name|default:user.username }}</h5>
+                <p class="text-muted small mb-2">@{{ user.username }}</p>
+                <span class="status-badge status-confirmed">{{ user.profile.get_role_display }}</span>
+                <hr>
+                <ul class="list-unstyled small text-start">
+                    <li class="mb-2"><i class="bi bi-envelope text-indigo"></i> {{ user.email }}</li>
+                    {% if user.profile.phone %}<li class="mb-2"><i class="bi bi-telephone text-indigo"></i> {{ user.profile.phone }}</li>{% endif %}
+                    <li><i class="bi bi-calendar text-indigo"></i> Joined {{ user.date_joined|date:"M Y" }}</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="col-lg-8">
+            <div class="card p-4">
+                <h4>Edit Profile</h4>
+                <form method="post" enctype="multipart/form-data" novalidate>
+                    {% csrf_token %}
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">First Name</label>
+                            {{ u_form.first_name|add_class:"form-control" }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Last Name</label>
+                            {{ u_form.last_name|add_class:"form-control" }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Email</label>
+                            {{ u_form.email|add_class:"form-control" }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Phone</label>
+                            {{ p_form.phone|add_class:"form-control" }}
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Address</label>
+                            {{ p_form.address|add_class:"form-control" }}
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Profile Picture</label>
+                            {{ p_form.profile_pic|add_class:"form-control" }}
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-indigo mt-4">
+                        <i class="bi bi-save"></i> Save Changes
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

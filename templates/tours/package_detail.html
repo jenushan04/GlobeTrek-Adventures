@@ -1,0 +1,158 @@
+{% extends 'base.html' %}
+{% load humanize %}
+{% block title %}{{ package.title }} — GlobeTrek Adventures{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <!-- Hero -->
+    <div class="detail-hero" style="background-image: url('{% if package.image %}{{ package.image.url }}{% else %}https://placehold.co/1200x500/4F46E5/ffffff?text={{ package.destination.name|urlencode }}{% endif %}');">
+        <div class="detail-info">
+            <span class="badge bg-light text-indigo">{{ package.category.name|default:"Tour Package" }}</span>
+            <h1 class="mt-2">{{ package.title }}</h1>
+            <p class="mb-0"><i class="bi bi-geo-alt-fill"></i> {{ package.destination.name }}, {{ package.destination.country }}</p>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <!-- Description -->
+            <div class="card p-4 mb-4">
+                <h3>About this Tour</h3>
+                <div class="package-description">
+                    {{ package.description|linebreaks }}
+                </div>
+
+                <div class="row g-3 mt-3">
+                    <div class="col-6 col-md-3">
+                        <div class="text-center p-3 bg-indigo-tint rounded">
+                            <i class="bi bi-clock text-indigo fs-3"></i>
+                            <div class="fw-bold">{{ package.duration_days }} days</div>
+                            <small class="text-muted">Duration</small>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="text-center p-3 bg-indigo-tint rounded">
+                            <i class="bi bi-people text-indigo fs-3"></i>
+                            <div class="fw-bold">Up to {{ package.max_travellers }}</div>
+                            <small class="text-muted">Travellers</small>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="text-center p-3 bg-indigo-tint rounded">
+                            <i class="bi bi-star-fill text-warning fs-3"></i>
+                            <div class="fw-bold">{{ package.avg_review_rating }}/5</div>
+                            <small class="text-muted">Rating</small>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="text-center p-3 bg-indigo-tint rounded">
+                            <i class="bi bi-calendar text-indigo fs-3"></i>
+                            <div class="fw-bold">{{ package.available_from|date:"M Y" }}</div>
+                            <small class="text-muted">From</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- What's included -->
+            <div class="card p-4 mb-4">
+                <h3><i class="bi bi-check2-circle text-success"></i> What's Included</h3>
+                <ul class="itinerary-list">
+                    {% for item in package.includes_list %}
+                        <li>{{ item }}</li>
+                    {% empty %}
+                        <li class="text-muted">Inclusions to be confirmed.</li>
+                    {% endfor %}
+                </ul>
+
+                {% if package.excludes_list %}
+                <h3 class="mt-4"><i class="bi bi-x-circle text-danger"></i> What's Excluded</h3>
+                <ul class="list-unstyled">
+                    {% for item in package.excludes_list %}
+                        <li class="py-1"><i class="bi bi-dash-circle text-muted"></i> {{ item }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            </div>
+
+            <!-- Reviews -->
+            <div class="card p-4">
+                <h3><i class="bi bi-chat-square-quote"></i> Traveller Reviews ({{ reviews|length }})</h3>
+                {% if reviews %}
+                    {% for r in reviews %}
+                    <div class="border-bottom py-3">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <strong>{{ r.customer.get_full_name|default:r.customer.username }}</strong>
+                                <div class="star-rating small">
+                                    {% for i in "12345" %}{% if forloop.counter <= r.rating %}<i class="bi bi-star-fill"></i>{% else %}<i class="bi bi-star"></i>{% endif %}{% endfor %}
+                                </div>
+                            </div>
+                            <small class="text-muted">{{ r.created_at|date:"d M Y" }}</small>
+                        </div>
+                        <p class="mt-2 mb-0 text-muted">{{ r.comment }}</p>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="text-muted">No reviews yet. Be the first to share your experience!</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Booking sidebar -->
+        <div class="col-lg-4">
+            <div class="card p-4 sticky-top" style="top: 80px;">
+                <h2 class="text-indigo">LKR {{ package.price|floatformat:0|intcomma }}</h2>
+                <p class="text-muted small">per person</p>
+                <hr>
+                <p class="small"><i class="bi bi-calendar-event text-indigo"></i> Available: <strong>{{ package.available_from|date:"d M" }} – {{ package.available_to|date:"d M Y" }}</strong></p>
+                <p class="small"><i class="bi bi-shield-check text-success"></i> Free cancellation up to 7 days before</p>
+
+                {% if user.is_authenticated %}
+                    {% if user.profile.is_customer %}
+                        <a href="{% url 'bookings:create' package.slug %}" class="btn btn-indigo w-100 mt-2 btn-lg">
+                            <i class="bi bi-suitcase"></i> Book Now
+                        </a>
+                    {% else %}
+                        <button class="btn btn-secondary w-100 mt-2" disabled>Only customers can book</button>
+                    {% endif %}
+                {% else %}
+                    <a href="{% url 'accounts:login' %}?next={{ request.path }}" class="btn btn-indigo w-100 mt-2 btn-lg">
+                        <i class="bi bi-box-arrow-in-right"></i> Login to Book
+                    </a>
+                {% endif %}
+
+                <hr>
+                <h6>Need help deciding?</h6>
+                <a href="{% url 'inquiries:create' %}?subject=Question about {{ package.title }}" class="btn btn-outline-indigo w-100 btn-sm">
+                    <i class="bi bi-chat-dots"></i> Ask a Question
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Related Tours -->
+    {% if related %}
+    <section class="mt-5">
+        <h3 class="mb-4">More tours in {{ package.destination.name }}</h3>
+        <div class="row g-4">
+            {% for r in related %}
+            <div class="col-md-4">
+                <div class="card h-100">
+                    {% if r.image %}<img src="{{ r.image.url }}" class="card-img-top" alt="{{ r.title }}">
+                    {% else %}<img src="https://placehold.co/400x300/818CF8/ffffff?text={{ r.destination.name|urlencode }}" class="card-img-top" alt="{{ r.title }}">{% endif %}
+                    <div class="card-body">
+                        <h6>{{ r.title }}</h6>
+                        <div class="d-flex justify-content-between">
+                            <span class="price-tag">LKR {{ r.price|floatformat:0 }}</span>
+                            <a href="{% url 'tours:package_detail' r.slug %}" class="btn btn-sm btn-outline-indigo">View</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+</div>
+{% endblock %}

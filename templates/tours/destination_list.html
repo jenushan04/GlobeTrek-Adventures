@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block title %}Destinations — GlobeTrek Adventures{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <h1><i class="bi bi-geo-alt-fill"></i> Explore Destinations</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'core:home' %}">Home</a></li>
+                <li class="breadcrumb-item active">Destinations</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="container">
+    {% if destinations %}
+    <div class="row g-4">
+        {% for d in destinations %}
+        <div class="col-lg-4 col-md-6">
+            <a href="{% url 'tours:destination_detail' d.id %}" class="text-decoration-none text-dark">
+                <div class="card h-100 position-relative">
+                    {% if d.featured %}<span class="badge-featured"><i class="bi bi-fire"></i> Hot</span>{% endif %}
+                    {% if d.image %}
+                        <img src="{{ d.image.url }}" class="card-img-top" alt="{{ d.name }}">
+                    {% else %}
+                        <img src="https://placehold.co/600x400/4F46E5/ffffff?text={{ d.name|urlencode }}" class="card-img-top" alt="{{ d.name }}">
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title">{{ d.name }}</h5>
+                        <p class="text-muted small mb-2"><i class="bi bi-flag"></i> {{ d.country }}</p>
+                        <p class="card-text text-muted small">{{ d.description|truncatewords:18 }}</p>
+                        <span class="text-indigo small fw-semibold">{{ d.packages.count }} tour package{{ d.packages.count|pluralize }} <i class="bi bi-arrow-right"></i></span>
+                    </div>
+                </div>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center py-5 text-muted">
+        <i class="bi bi-geo" style="font-size: 4rem;"></i>
+        <p class="mt-3">Destinations coming soon!</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

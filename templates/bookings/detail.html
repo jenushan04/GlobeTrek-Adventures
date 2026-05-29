@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+{% load humanize %}
+{% block title %}Booking {{ booking.reference }} — GlobeTrek Adventures{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <h1><i class="bi bi-bookmark-check"></i> Booking #{{ booking.reference }}</h1>
+        <p class="opacity-75 mb-0">Created on {{ booking.created_at|date:"d M Y, h:i A" }}</p>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="card p-4">
+                <div class="d-flex justify-content-between align-items-start">
+                    <h3>{{ booking.package.title }}</h3>
+                    <span class="status-badge status-{{ booking.status }}">{{ booking.get_status_display }}</span>
+                </div>
+                <p class="text-muted"><i class="bi bi-geo-alt"></i> {{ booking.package.destination.name }}, {{ booking.package.destination.country }}</p>
+                <hr>
+
+                <dl class="row mt-3">
+                    <dt class="col-sm-4">Travel Date</dt>
+                    <dd class="col-sm-8"><i class="bi bi-calendar-event text-indigo"></i> {{ booking.travel_date|date:"d M Y" }}</dd>
+
+                    <dt class="col-sm-4">Number of Travellers</dt>
+                    <dd class="col-sm-8"><i class="bi bi-people text-indigo"></i> {{ booking.num_travellers }}</dd>
+
+                    <dt class="col-sm-4">Duration</dt>
+                    <dd class="col-sm-8"><i class="bi bi-clock text-indigo"></i> {{ booking.package.duration_days }} days</dd>
+
+                    <dt class="col-sm-4">Total Price</dt>
+                    <dd class="col-sm-8"><strong class="text-indigo h5">LKR {{ booking.total_price|floatformat:0|intcomma }}</strong></dd>
+
+                    <dt class="col-sm-4">Payment Status</dt>
+                    <dd class="col-sm-8"><span class="status-badge status-{{ booking.payment_status }}">{{ booking.get_payment_status_display }}</span></dd>
+
+                    {% if booking.special_requests %}
+                    <dt class="col-sm-4">Special Requests</dt>
+                    <dd class="col-sm-8">{{ booking.special_requests }}</dd>
+                    {% endif %}
+                </dl>
+            </div>
+
+            {% if booking.payment %}
+            <div class="card p-4 mt-3">
+                <h5><i class="bi bi-credit-card text-indigo"></i> Payment Details</h5>
+                <dl class="row mt-2 mb-0">
+                    <dt class="col-sm-4">Transaction ID</dt>
+                    <dd class="col-sm-8"><code>{{ booking.payment.transaction_id }}</code></dd>
+                    <dt class="col-sm-4">Method</dt>
+                    <dd class="col-sm-8">{{ booking.payment.get_payment_method_display }}</dd>
+                    <dt class="col-sm-4">Paid At</dt>
+                    <dd class="col-sm-8">{{ booking.payment.paid_at|date:"d M Y, h:i A" }}</dd>
+                </dl>
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card p-3">
+                <h6 class="mb-3">Actions</h6>
+                {% if booking.payment_status == 'unpaid' %}
+                    <a href="{% url 'bookings:pay' booking.id %}" class="btn btn-indigo w-100 mb-2">
+                        <i class="bi bi-credit-card"></i> Make Payment
+                    </a>
+                {% endif %}
+
+                {% if booking.status == 'pending' or booking.status == 'confirmed' %}
+                    <a href="{% url 'bookings:customize' booking.id %}" class="btn btn-outline-indigo w-100 mb-2">
+                        <i class="bi bi-pencil"></i> Modify Booking
+                    </a>
+                {% endif %}
+
+                {% if booking.can_cancel %}
+                    <a href="{% url 'bookings:cancel' booking.id %}" class="btn btn-outline-danger w-100 mb-2">
+                        <i class="bi bi-x-circle"></i> Cancel Booking
+                    </a>
+                {% endif %}
+
+                {% if booking.payment %}
+                    <a href="{% url 'bookings:receipt' booking.id %}" class="btn btn-light w-100 mb-2">
+                        <i class="bi bi-receipt"></i> View Receipt
+                    </a>
+                {% endif %}
+
+                {% if booking.can_review %}
+                    <a href="{% url 'tours:submit_review' booking.package.slug %}" class="btn btn-warning w-100 mb-2 text-white">
+                        <i class="bi bi-star"></i> Write a Review
+                    </a>
+                {% endif %}
+
+                <a href="{% url 'dashboard:customer' %}" class="btn btn-light w-100">
+                    <i class="bi bi-arrow-left"></i> Back to Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

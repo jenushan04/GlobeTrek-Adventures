@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% load humanize %}
+{% block title %}Manage Bookings — GlobeTrek Staff{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row g-3">
+        <div class="col-lg-2">{% include 'dashboard/_sidebar.html' %}</div>
+        <div class="col-lg-10">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div>
+                    <h2 class="d-flex align-items-center gap-2 mb-1"><i class="bi bi-bookmark-check"></i> Manage Bookings</h2>
+                    <p class="text-muted mb-0">Review, confirm, or cancel customer bookings.</p>
+                </div>
+                <form method="get">
+                    <select name="status" class="form-select" onchange="this.form.submit()">
+                        <option value="">All Statuses</option>
+                        <option value="pending" {% if status_filter == "pending" %}selected{% endif %}>Pending</option>
+                        <option value="confirmed" {% if status_filter == "confirmed" %}selected{% endif %}>Confirmed</option>
+                        <option value="completed" {% if status_filter == "completed" %}selected{% endif %}>Completed</option>
+                        <option value="cancelled" {% if status_filter == "cancelled" %}selected{% endif %}>Cancelled</option>
+                    </select>
+                </form>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-globetrek mb-0">
+                    <thead>
+                        <tr>
+                            <th>Ref</th>
+                            <th>Customer</th>
+                            <th>Tour</th>
+                            <th>Travel Date</th>
+                            <th>Pax</th>
+                            <th>Total (LKR)</th>
+                            <th>Status</th>
+                            <th>Payment</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for b in bookings %}
+                        <tr>
+                            <td><a href="{% url 'bookings:detail' b.id %}" class="text-indigo fw-semibold">#{{ b.reference }}</a></td>
+                            <td>{{ b.customer.get_full_name|default:b.customer.username }}</td>
+                            <td>{{ b.package.title|truncatechars:30 }}</td>
+                            <td>{{ b.travel_date|date:"d M Y" }}</td>
+                            <td>{{ b.num_travellers }}</td>
+                            <td>{{ b.total_price|floatformat:0|intcomma }}</td>
+                            <td><span class="status-badge status-{{ b.status }}">{{ b.get_status_display }}</span></td>
+                            <td><span class="status-badge status-{{ b.payment_status }}">{{ b.get_payment_status_display }}</span></td>
+                            <td>
+                                {% if b.status == 'pending' %}
+                                <form method="post" action="{% url 'bookings:confirm' b.id %}" class="d-inline">{% csrf_token %}
+                                    <button class="btn btn-sm btn-success" title="Confirm"><i class="bi bi-check"></i></button>
+                                </form>
+                                {% endif %}
+                                {% if b.status == 'confirmed' %}
+                                <form method="post" action="{% url 'bookings:complete' b.id %}" class="d-inline">{% csrf_token %}
+                                    <button class="btn btn-sm btn-primary" title="Mark Completed"><i class="bi bi-flag"></i></button>
+                                </form>
+                                {% endif %}
+                                {% if b.status != 'cancelled' and b.status != 'completed' %}
+                                <form method="post" action="{% url 'bookings:staff_cancel' b.id %}" class="d-inline">{% csrf_token %}
+                                    <button class="btn btn-sm btn-outline-danger" data-confirm="Cancel this booking?" title="Cancel"><i class="bi bi-x"></i></button>
+                                </form>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="9" class="text-center text-muted py-4">No bookings yet.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

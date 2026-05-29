@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+{% load humanize %}
+{% block title %}My Dashboard — GlobeTrek Adventures{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-3">
+    <div class="row g-3">
+        <div class="col-lg-2">{% include 'dashboard/_sidebar.html' %}</div>
+        <div class="col-lg-10">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h2 class="d-flex align-items-center gap-2 mb-1">Welcome back, {{ user.first_name|default:user.username }}! <i class="bi bi-airplane"></i></h2>
+                    <p class="text-muted mb-0">Here's a summary of your travel activity.</p>
+                </div>
+                <a href="{% url 'tours:package_list' %}" class="btn btn-indigo"><i class="bi bi-plus-circle"></i> Book New Tour</a>
+            </div>
+
+            <!-- Stat Cards -->
+            <div class="row g-3 mb-4">
+                <div class="col-md-3 col-6">
+                    <div class="stat-card">
+                        <div class="stat-value">{{ stats.total_bookings }}</div>
+                        <div class="stat-label">Total Bookings</div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="stat-card">
+                        <div class="stat-value">{{ stats.confirmed }}</div>
+                        <div class="stat-label">Confirmed</div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="stat-card">
+                        <div class="stat-value">{{ stats.completed }}</div>
+                        <div class="stat-label">Completed Trips</div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="stat-card">
+                        <div class="stat-value">{{ stats.inquiries_open }}</div>
+                        <div class="stat-label">Open Inquiries</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- My Bookings -->
+            <div class="card p-4 mb-4">
+                <div class="d-flex justify-content-between mb-3">
+                    <h4 class="mb-0"><i class="bi bi-bookmark-check text-indigo"></i> My Bookings</h4>
+                    <small class="text-muted">{{ stats.total_bookings }} total</small>
+                </div>
+
+                {% if bookings %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Ref</th>
+                                <th>Tour</th>
+                                <th>Travel Date</th>
+                                <th>Travellers</th>
+                                <th>Total (LKR)</th>
+                                <th>Status</th>
+                                <th>Payment</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for b in bookings %}
+                            <tr>
+                                <td><strong class="text-indigo">#{{ b.reference }}</strong></td>
+                                <td>{{ b.package.title|truncatechars:30 }}</td>
+                                <td>{{ b.travel_date|date:"d M Y" }}</td>
+                                <td>{{ b.num_travellers }}</td>
+                                <td>{{ b.total_price|floatformat:0|intcomma }}</td>
+                                <td><span class="status-badge status-{{ b.status }}">{{ b.get_status_display }}</span></td>
+                                <td><span class="status-badge status-{{ b.payment_status }}">{{ b.get_payment_status_display }}</span></td>
+                                <td>
+                                    <a href="{% url 'bookings:detail' b.id %}" class="btn btn-sm btn-outline-indigo">View</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="text-center py-4 text-muted">
+                    <i class="bi bi-suitcase" style="font-size: 3rem;"></i>
+                    <p class="mt-2">No bookings yet. <a href="{% url 'tours:package_list' %}">Explore tours →</a></p>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Recent Inquiries -->
+            {% if recent_inquiries %}
+            <div class="card p-4">
+                <h4 class="mb-3"><i class="bi bi-chat-square-dots text-indigo"></i> Recent Inquiries</h4>
+                <ul class="list-group list-group-flush">
+                    {% for i in recent_inquiries %}
+                    <li class="list-group-item d-flex justify-content-between">
+                        <div>
+                            <strong>{{ i.subject }}</strong><br>
+                            <small class="text-muted">{{ i.created_at|date:"d M Y" }} &middot; {{ i.replies.count }} repl{{ i.replies.count|pluralize:"y,ies" }}</small>
+                        </div>
+                        <div>
+                            <span class="status-badge status-{{ i.status }}">{{ i.get_status_display }}</span>
+                            <a href="{% url 'inquiries:my_detail' i.pk %}" class="btn btn-sm btn-outline-indigo ms-2">View</a>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

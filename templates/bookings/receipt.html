@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% load humanize %}
+{% block title %}Receipt — GlobeTrek Adventures{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="card p-5" style="max-width: 720px; margin: 0 auto;">
+        <div class="text-center">
+            <i class="bi bi-check-circle-fill text-success" style="font-size: 4rem;"></i>
+            <h2 class="mt-3 text-success">Payment Successful!</h2>
+            <p class="text-muted">Your booking is now confirmed. We've sent a confirmation email.</p>
+        </div>
+
+        <hr>
+
+        <div class="row mt-3">
+            <div class="col-6">
+                <h6 class="text-uppercase text-muted small">Booking Reference</h6>
+                <p class="fw-bold text-indigo">#{{ booking.reference }}</p>
+            </div>
+            <div class="col-6 text-end">
+                <h6 class="text-uppercase text-muted small">Transaction ID</h6>
+                <p class="fw-bold"><code>{{ booking.payment.transaction_id }}</code></p>
+            </div>
+            <div class="col-6">
+                <h6 class="text-uppercase text-muted small">Customer</h6>
+                <p>{{ booking.customer.get_full_name|default:booking.customer.username }}</p>
+            </div>
+            <div class="col-6 text-end">
+                <h6 class="text-uppercase text-muted small">Date</h6>
+                <p>{{ booking.payment.paid_at|date:"d M Y, h:i A" }}</p>
+            </div>
+        </div>
+
+        <hr>
+
+        <h6>Booking Details</h6>
+        <table class="table table-borderless">
+            <tr>
+                <td>{{ booking.package.title }}</td>
+                <td class="text-end">LKR {{ booking.package.price|floatformat:0|intcomma }}</td>
+            </tr>
+            <tr class="text-muted small">
+                <td>Travel date: {{ booking.travel_date|date:"d M Y" }} &middot; {{ booking.num_travellers }} traveller{{ booking.num_travellers|pluralize }}</td>
+                <td class="text-end">x{{ booking.num_travellers }}</td>
+            </tr>
+            <tr class="border-top">
+                <th>Total Paid</th>
+                <th class="text-end text-indigo h5">LKR {{ booking.total_price|floatformat:0|intcomma }}</th>
+            </tr>
+        </table>
+
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle"></i> Keep this reference for your records. Our team will contact you 7 days before travel.
+        </div>
+
+        <div class="text-center mt-3">
+            <a href="{% url 'bookings:detail' booking.id %}" class="btn btn-indigo">
+                <i class="bi bi-eye"></i> View Booking
+            </a>
+            <a href="{% url 'dashboard:customer' %}" class="btn btn-light">
+                <i class="bi bi-house"></i> My Bookings
+            </a>
+            <button onclick="window.print()" class="btn btn-outline-indigo">
+                <i class="bi bi-printer"></i> Print Receipt
+            </button>
+        </div>
+    </div>
+</div>
+{% endblock %}

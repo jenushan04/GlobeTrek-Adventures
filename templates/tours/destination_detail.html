@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% block title %}{{ destination.name }} — GlobeTrek Adventures{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <h1><i class="bi bi-geo-alt-fill"></i> {{ destination.name }}</h1>
+        <p class="opacity-75 mb-0">{{ destination.country }}</p>
+        <nav class="mt-2">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'core:home' %}">Home</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'tours:destination_list' %}">Destinations</a></li>
+                <li class="breadcrumb-item active">{{ destination.name }}</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row g-4 mb-5">
+        <div class="col-lg-6">
+            {% if destination.image %}
+                <img src="{{ destination.image.url }}" class="img-fluid rounded shadow" alt="{{ destination.name }}">
+            {% else %}
+                <img src="https://placehold.co/800x500/4F46E5/ffffff?text={{ destination.name|urlencode }}" class="img-fluid rounded shadow" alt="{{ destination.name }}">
+            {% endif %}
+        </div>
+        <div class="col-lg-6">
+            <h2>About {{ destination.name }}</h2>
+            <p>{{ destination.description|linebreaks }}</p>
+        </div>
+    </div>
+
+    <h3 class="mb-3">Tour packages to {{ destination.name }}</h3>
+    {% if packages %}
+    <div class="row g-4">
+        {% for pkg in packages %}
+        <div class="col-md-4">
+            <div class="card h-100">
+                {% if pkg.image %}<img src="{{ pkg.image.url }}" class="card-img-top" alt="{{ pkg.title }}">
+                {% else %}<img src="https://placehold.co/400x300/818CF8/ffffff?text={{ pkg.title|urlencode }}" class="card-img-top" alt="{{ pkg.title }}">{% endif %}
+                <div class="card-body">
+                    <h6>{{ pkg.title }}</h6>
+                    <div class="d-flex justify-content-between mt-2">
+                        <span class="price-tag">LKR {{ pkg.price|floatformat:0 }}</span>
+                        <a href="{% url 'tours:package_detail' pkg.slug %}" class="btn btn-sm btn-outline-indigo">View</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p class="text-muted">No tours yet for this destination.</p>
+    {% endif %}
+</div>
+{% endblock %}

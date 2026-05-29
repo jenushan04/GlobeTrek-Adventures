@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title %}Delete {{ package.title }} — GlobeTrek Staff{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="auth-card">
+        <div class="text-center">
+            <i class="bi bi-exclamation-triangle-fill text-danger" style="font-size: 4rem;"></i>
+            <h3 class="mt-2">Delete Tour Package?</h3>
+            <p>Are you sure you want to permanently delete <strong>{{ package.title }}</strong>?</p>
+            <p class="text-muted small">This action cannot be undone.</p>
+        </div>
+
+        <form method="post" class="mt-4">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger w-100"><i class="bi bi-trash"></i> Yes, Delete</button>
+            <a href="{% url 'tours:manage_list' %}" class="btn btn-light w-100 mt-2">Cancel</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

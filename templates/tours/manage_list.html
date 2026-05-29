@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% block title %}Manage Tour Packages — GlobeTrek Staff{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+    <div class="row g-3">
+        <div class="col-lg-2">{% include 'dashboard/_sidebar.html' %}</div>
+        <div class="col-lg-10">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div>
+                    <h2 class="d-flex align-items-center gap-2 mb-1"><i class="bi bi-suitcase"></i> Manage Tour Packages</h2>
+                    <p class="text-muted mb-0">Create, edit, and remove tour offerings.</p>
+                </div>
+                <a href="{% url 'tours:manage_create' %}" class="btn btn-indigo"><i class="bi bi-plus-circle"></i> New Package</a>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-globetrek mb-0">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Destination</th>
+                            <th>Price (LKR)</th>
+                            <th>Duration</th>
+                            <th>Rating</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for pkg in packages %}
+                        <tr>
+                            <td><a href="{% url 'tours:package_detail' pkg.slug %}" class="text-indigo fw-semibold">{{ pkg.title }}</a></td>
+                            <td>{{ pkg.destination.name }}</td>
+                            <td>{{ pkg.price|floatformat:0 }}</td>
+                            <td>{{ pkg.duration_days }} days</td>
+                            <td><i class="bi bi-star-fill text-warning"></i> {{ pkg.rating }}</td>
+                            <td>
+                                {% if pkg.is_active %}
+                                    <span class="status-badge status-confirmed">Active</span>
+                                {% else %}
+                                    <span class="status-badge status-cancelled">Inactive</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="{% url 'tours:manage_edit' pkg.slug %}" class="btn btn-sm btn-outline-indigo"><i class="bi bi-pencil"></i></a>
+                                <a href="{% url 'tours:manage_delete' pkg.slug %}" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="7" class="text-center text-muted py-4">No packages yet. <a href="{% url 'tours:manage_create' %}">Create one</a>.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

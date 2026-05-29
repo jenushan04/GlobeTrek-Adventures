@@ -1,0 +1,8 @@
+{# Wrapper — included by some pages that auto-pick the right sidebar #}
+{% if user.profile.is_admin %}
+    {% include 'dashboard/_nav_admin.html' %}
+{% elif user.profile.is_staff_role %}
+    {% include 'dashboard/_nav_staff.html' %}
+{% else %}
+    {% include 'dashboard/_nav_customer.html' %}
+{% endif %}

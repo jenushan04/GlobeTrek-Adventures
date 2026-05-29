@@ -1,0 +1,39 @@
+{# Staff sidebar nav #}
+<div class="sidebar">
+    <h6 class="mb-3">Staff Panel</h6>
+    <ul class="nav flex-column">
+        <li class="nav-item">
+            <a href="{% url 'dashboard:staff' %}" class="nav-link {% if request.resolver_match.url_name == 'staff' %}active{% endif %}">
+                <i class="bi bi-speedometer2"></i> Dashboard
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{% url 'tours:manage_list' %}" class="nav-link {% if request.resolver_match.app_name == 'tours' and 'manage' in request.path %}active{% endif %}">
+                <i class="bi bi-suitcase"></i> Tour Packages
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{% url 'bookings:manage_list' %}" class="nav-link {% if request.resolver_match.app_name == 'bookings' and 'manage' in request.path %}active{% endif %}">
+                <i class="bi bi-bookmark-check"></i> Bookings
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{% url 'inquiries:manage_list' %}" class="nav-link {% if request.resolver_match.app_name == 'inquiries' and 'manage' in request.path %}active{% endif %}">
+                <i class="bi bi-envelope-paper"></i> Inquiries
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{% url 'accounts:profile' %}" class="nav-link">
+                <i class="bi bi-person"></i> My Profile
+            </a>
+        </li>
+        <li>
+            <form action="{% url 'accounts:logout' %}" method="post" class="m-0 px-3 pt-2">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-outline-danger btn-sm w-100">
+                    <i class="bi bi-box-arrow-right"></i> Logout
+                </button>
+            </form>
+        </li>
+    </ul>
+</div>

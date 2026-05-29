@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+{% block title %}About Us — GlobeTrek Adventures{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <h1><i class="bi bi-info-circle"></i> About GlobeTrek Adventures</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'core:home' %}">Home</a></li>
+                <li class="breadcrumb-item active">About Us</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<section class="section">
+    <div class="container">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-6">
+                <h2>Crafting unforgettable journeys since 2010</h2>
+                <p class="lead text-muted">Born in the coastal town of Negombo, Sri Lanka — our story is one of passion for travel and dedication to our customers.</p>
+                <p>GlobeTrek Adventures was founded in 2010 with a simple mission: to make world-class travel accessible to every Sri Lankan. From humble beginnings as a small two-person operation on Lewis Place, we have grown into one of the country's most trusted travel management companies, serving over 25,000 customers across the globe.</p>
+                <p>We specialise in curated tour packages — from intimate honeymoon retreats in the Maldives to grand cultural tours through Europe, Asia, and beyond. Every itinerary we design is hand-crafted by our team of experienced travel consultants who have visited every destination we offer.</p>
+            </div>
+            <div class="col-lg-6">
+                <img src="https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=800" class="img-fluid rounded shadow-lg" alt="Travel" style="border-radius: 16px;">
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section bg-indigo-tint">
+    <div class="container">
+        <div class="row g-4 text-center">
+            <div class="col-md-3 col-6">
+                <div class="stat-card">
+                    <div class="stat-value">15+</div>
+                    <div class="stat-label">Years of Excellence</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="stat-card">
+                    <div class="stat-value">25,000+</div>
+                    <div class="stat-label">Happy Travellers</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="stat-card">
+                    <div class="stat-value">45+</div>
+                    <div class="stat-label">Countries Covered</div>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="stat-card">
+                    <div class="stat-value">98%</div>
+                    <div class="stat-label">Customer Satisfaction</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="section-title">
+            <h2>Our Mission & Values</h2>
+            <div class="underline"></div>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="feature-box">
+                    <div class="icon"><i class="bi bi-bullseye"></i></div>
+                    <h5>Our Mission</h5>
+                    <p class="text-muted">To create life-changing travel experiences that connect people with cultures, landscapes, and stories worth remembering.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-box">
+                    <div class="icon"><i class="bi bi-eye"></i></div>
+                    <h5>Our Vision</h5>
+                    <p class="text-muted">To be South Asia's most loved travel brand — known for honesty, craftsmanship, and customer delight.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-box">
+                    <div class="icon"><i class="bi bi-stars"></i></div>
+                    <h5>Our Values</h5>
+                    <p class="text-muted">Integrity in every transaction. Excellence in every itinerary. Care in every conversation.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section bg-indigo-tint">
+    <div class="container">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-6">
+                <h2>Visit Our Office</h2>
+                <p class="text-muted">Our team would love to meet you in person. Drop by our Negombo office any working day.</p>
+                <ul class="list-unstyled">
+                    <li class="mb-2"><i class="bi bi-geo-alt-fill text-indigo"></i> <strong>Address:</strong> {{ COMPANY_ADDRESS }}</li>
+                    <li class="mb-2"><i class="bi bi-telephone-fill text-indigo"></i> <strong>Phone:</strong> {{ COMPANY_PHONE }}</li>
+                    <li class="mb-2"><i class="bi bi-envelope-fill text-indigo"></i> <strong>Email:</strong> {{ COMPANY_EMAIL }}</li>
+                    <li class="mb-2"><i class="bi bi-clock-fill text-indigo"></i> <strong>Hours:</strong> Mon-Sat, 9:00 AM – 6:00 PM</li>
+                </ul>
+                <a href="{% url 'core:contact' %}" class="btn btn-indigo mt-3"><i class="bi bi-chat-dots"></i> Get in Touch</a>
+            </div>
+            <div class="col-lg-6">
+                <iframe
+                    src="https://www.openstreetmap.org/export/embed.html?bbox=79.835%2C7.198%2C79.880%2C7.221&layer=mapnik"
+                    width="100%" height="350" style="border:0; border-radius: 16px;"
+                    title="Negombo Map"></iframe>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+{% block title %}{{ mode }} Tour Package — GlobeTrek Staff{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row g-3">
+        <div class="col-lg-2">{% include 'dashboard/_sidebar.html' %}</div>
+        <div class="col-lg-10">
+            <h2>{{ mode }} Tour Package</h2>
+            <p class="text-muted">{{ mode }} a tour package — fill in details below.</p>
+
+            <div class="card p-4">
+                <form method="post" enctype="multipart/form-data" novalidate>
+                    {% csrf_token %}
+
+                    <div class="row g-3">
+                        <div class="col-md-8">
+                            <label class="form-label">Title</label>
+                            {{ form.title|add_class:"form-control" }}
+                            {% if form.title.errors %}<div class="text-danger small">{{ form.title.errors.0 }}</div>{% endif %}
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Rating (0-5)</label>
+                            {{ form.rating|add_class:"form-control" }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Destination</label>
+                            {{ form.destination|add_class:"form-select" }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Category</label>
+                            {{ form.category|add_class:"form-select" }}
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Description</label>
+                            {{ form.description|add_class:"form-control" }}
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Duration (days)</label>
+                            {{ form.duration_days|add_class:"form-control" }}
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Price (LKR)</label>
+                            {{ form.price|add_class:"form-control" }}
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Max Travellers</label>
+                            {{ form.max_travellers|add_class:"form-control" }}
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Active</label>
+                            <div class="form-check form-switch mt-2">
+                                {{ form.is_active|add_class:"form-check-input" }}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Available From</label>
+                            {{ form.available_from|add_class:"form-control" }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Available To</label>
+                            {{ form.available_to|add_class:"form-control" }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Includes (one per line)</label>
+                            {{ form.includes|add_class:"form-control" }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Excludes (one per line)</label>
+                            {{ form.excludes|add_class:"form-control" }}
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Cover Image</label>
+                            {{ form.image|add_class:"form-control" }}
+                        </div>
+                    </div>
+
+                    {% if form.non_field_errors %}<div class="alert alert-danger mt-3">{{ form.non_field_errors }}</div>{% endif %}
+
+                    <div class="mt-4">
+                        <button type="submit" class="btn btn-indigo"><i class="bi bi-save"></i> Save Package</button>
+                        <a href="{% url 'tours:manage_list' %}" class="btn btn-light">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

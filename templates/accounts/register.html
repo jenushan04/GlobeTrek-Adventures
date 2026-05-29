@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+{% block title %}Create Account — GlobeTrek Adventures{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="auth-card" style="max-width: 600px;">
+        <div class="text-center mb-4">
+            <i class="bi bi-person-plus-fill text-indigo" style="font-size: 3rem;"></i>
+            <h2 class="mt-2">Create Your Account</h2>
+            <p class="text-muted">Join thousands of travellers exploring the world with us.</p>
+        </div>
+
+        <form method="post" novalidate>
+            {% csrf_token %}
+
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">First Name</label>
+                    {{ form.first_name|add_class:"form-control" }}
+                    {% if form.first_name.errors %}<div class="text-danger small">{{ form.first_name.errors.0 }}</div>{% endif %}
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Last Name</label>
+                    {{ form.last_name|add_class:"form-control" }}
+                    {% if form.last_name.errors %}<div class="text-danger small">{{ form.last_name.errors.0 }}</div>{% endif %}
+                </div>
+                <div class="col-12">
+                    <label class="form-label">Username</label>
+                    {{ form.username|add_class:"form-control" }}
+                    {% if form.username.errors %}<div class="text-danger small">{{ form.username.errors.0 }}</div>{% endif %}
+                </div>
+                <div class="col-md-7">
+                    <label class="form-label">Email</label>
+                    {{ form.email|add_class:"form-control" }}
+                    {% if form.email.errors %}<div class="text-danger small">{{ form.email.errors.0 }}</div>{% endif %}
+                </div>
+                <div class="col-md-5">
+                    <label class="form-label">Phone</label>
+                    {{ form.phone|add_class:"form-control" }}
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Password</label>
+                    {{ form.password1|add_class:"form-control" }}
+                    {% if form.password1.errors %}<div class="text-danger small">{{ form.password1.errors.0 }}</div>{% endif %}
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Confirm Password</label>
+                    {{ form.password2|add_class:"form-control" }}
+                    {% if form.password2.errors %}<div class="text-danger small">{{ form.password2.errors.0 }}</div>{% endif %}
+                </div>
+            </div>
+
+            {% if form.non_field_errors %}
+                <div class="alert alert-danger mt-3">{{ form.non_field_errors }}</div>
+            {% endif %}
+
+            <button type="submit" class="btn btn-indigo w-100 mt-4">
+                <i class="bi bi-check-circle"></i> Create Account
+            </button>
+        </form>
+
+        <hr class="my-4">
+        <p class="text-center mb-0">
+            Already have an account?
+            <a href="{% url 'accounts:login' %}" class="text-indigo fw-semibold">Log in here</a>
+        </p>
+    </div>
+</div>
+{% endblock %}

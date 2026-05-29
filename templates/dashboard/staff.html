@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% load humanize %}
+{% block title %}Staff Dashboard — GlobeTrek Adventures{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-3">
+    <div class="row g-3">
+        <div class="col-lg-2">{% include 'dashboard/_sidebar.html' %}</div>
+        <div class="col-lg-10">
+            <h2 class="d-flex align-items-center gap-2 mb-1">Staff Dashboard <i class="bi bi-person-workspace"></i></h2>
+            <p class="text-muted">Welcome back, {{ user.first_name|default:user.username }}.</p>
+
+            <!-- Stat Cards -->
+            <div class="row g-3 mb-4">
+                <div class="col-md-3 col-6">
+                    <div class="stat-card">
+                        <div class="stat-value">{{ stats.pending_bookings }}</div>
+                        <div class="stat-label">Pending Bookings</div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="stat-card">
+                        <div class="stat-value">{{ stats.open_inquiries }}</div>
+                        <div class="stat-label">Open Inquiries</div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="stat-card">
+                        <div class="stat-value">{{ stats.active_packages }}</div>
+                        <div class="stat-label">Active Packages</div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="stat-card">
+                        <div class="stat-value">{{ stats.total_bookings }}</div>
+                        <div class="stat-label">All Bookings</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-3">
+                <!-- Recent Bookings -->
+                <div class="col-lg-7">
+                    <div class="card p-4">
+                        <div class="d-flex justify-content-between mb-3">
+                            <h5 class="mb-0"><i class="bi bi-bookmark-check text-indigo"></i> Recent Bookings</h5>
+                            <a href="{% url 'bookings:manage_list' %}" class="text-indigo small">View all →</a>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table mb-0">
+                                <thead>
+                                    <tr><th>Ref</th><th>Customer</th><th>Status</th></tr>
+                                </thead>
+                                <tbody>
+                                    {% for b in recent_bookings %}
+                                    <tr>
+                                        <td><a href="{% url 'bookings:detail' b.id %}" class="text-indigo">#{{ b.reference }}</a></td>
+                                        <td>{{ b.customer.username }}</td>
+                                        <td><span class="status-badge status-{{ b.status }}">{{ b.get_status_display }}</span></td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr><td colspan="3" class="text-muted text-center py-3">No bookings yet.</td></tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Open Inquiries -->
+                <div class="col-lg-5">
+                    <div class="card p-4">
+                        <div class="d-flex justify-content-between mb-3">
+                            <h5 class="mb-0"><i class="bi bi-envelope-paper text-indigo"></i> Open Inquiries</h5>
+                            <a href="{% url 'inquiries:manage_list' %}" class="text-indigo small">View all →</a>
+                        </div>
+                        <ul class="list-group list-group-flush">
+                            {% for i in recent_inquiries %}
+                            <li class="list-group-item px-0">
+                                <strong>{{ i.subject|truncatechars:30 }}</strong><br>
+                                <small class="text-muted">{{ i.name }} &middot; {{ i.created_at|date:"d M" }}</small>
+                                <a href="{% url 'inquiries:reply' i.pk %}" class="btn btn-sm btn-indigo float-end">Reply</a>
+                            </li>
+                            {% empty %}
+                            <li class="list-group-item px-0 text-muted">No open inquiries.</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

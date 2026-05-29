@@ -1,0 +1,202 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}GlobeTrek Adventures — Discover the World{% endblock %}</title>
+    <meta name="description"
+        content="GlobeTrek Adventures - Premier travel and tourism management company based in Negombo, Sri Lanka. Discover curated tour packages worldwide.">
+
+    <!-- Google Fonts: Poppins (headings) + Inter (body) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.css">
+
+    <!-- Custom GlobeTrek indigo theme -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+    {% block extra_head %}{% endblock %}
+</head>
+
+<body>
+
+    <!-- ============== Navbar ============== -->
+    <nav class="navbar navbar-expand-lg navbar-globetrek sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'core:home' %}">
+                <span class="brand-mark"><i class="bi bi-globe-asia-australia"></i></span>
+                <span class="brand-text">GlobeTrek <span class="brand-text-accent">Adventures</span></span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="mainNav">
+                <ul class="navbar-nav ms-auto align-items-lg-center">
+                    <li class="nav-item"><a
+                            class="nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}"
+                            href="{% url 'core:home' %}"><i class="bi bi-house-door"></i> Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'tours:package_list' %}"><i
+                                class="bi bi-suitcase"></i> Tours</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'tours:destination_list' %}"><i
+                                class="bi bi-geo-alt"></i> Destinations</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'core:about' %}"><i
+                                class="bi bi-info-circle"></i> About</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'core:contact' %}"><i
+                                class="bi bi-envelope"></i> Contact</a></li>
+
+                    {% if user.is_authenticated %}
+                    {% if '/dashboard/' in request.path or '/manage/' in request.path or '/my_list/' in request.path %}
+                    {# Hide top user dropdown inside the dashboard since sidebar has profile/logout #}
+                    {% else %}
+                    <li class="nav-item dropdown user-menu ms-lg-2">
+                        <a class="nav-link user-trigger" data-bs-toggle="dropdown" href="#" aria-expanded="false">
+                            <span class="avatar avatar-sm">
+                                {% if user.profile.profile_pic %}
+                                <img src="{{ user.profile.profile_pic.url }}" alt="{{ user.username }}">
+                                {% else %}
+                                <span class="avatar-initial">{{ user.username|slice:":1"|upper }}</span>
+                                {% endif %}
+                                <span class="avatar-status"></span>
+                            </span>
+                            <span class="user-meta d-none d-lg-flex">
+                                <span class="user-name">{{ user.get_full_name|default:user.username }}</span>
+                                {% if user.profile.role %}
+                                <span class="user-role">{{ user.profile.get_role_display }}</span>
+                                {% endif %}
+                            </span>
+                            <i class="bi bi-chevron-down user-caret"></i>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end user-dropdown">
+                            <li class="user-dropdown-header">
+                                <span class="avatar avatar-md">
+                                    {% if user.profile.profile_pic %}
+                                    <img src="{{ user.profile.profile_pic.url }}" alt="{{ user.username }}">
+                                    {% else %}
+                                    <span class="avatar-initial">{{ user.username|slice:":1"|upper }}</span>
+                                    {% endif %}
+                                </span>
+                                <div class="user-dropdown-info">
+                                    <div class="user-dropdown-name">{{ user.get_full_name|default:user.username }}</div>
+                                    <div class="user-dropdown-email">{{ user.email|default:user.username }}</div>
+                                    {% if user.profile.role %}
+                                    <span class="user-dropdown-role-chip">{{ user.profile.get_role_display }}</span>
+                                    {% endif %}
+                                </div>
+                            </li>
+                            <li><a class="dropdown-item" href="{% url 'dashboard:redirect' %}"><i
+                                        class="bi bi-speedometer2"></i> Dashboard</a></li>
+                            <li><a class="dropdown-item" href="{% url 'accounts:profile' %}"><i
+                                        class="bi bi-person"></i> My Profile</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li>
+                                <form action="{% url 'accounts:logout' %}" method="post" class="m-0">
+                                    {% csrf_token %}
+                                    <button type="submit" class="dropdown-item dropdown-item-danger"><i
+                                            class="bi bi-box-arrow-right"></i> Logout</button>
+                                </form>
+                            </li>
+                        </ul>
+                    </li>
+                    {% endif %}
+                    {% else %}
+                    <li class="nav-item"><a class="nav-link" href="{% url 'accounts:login' %}"><i
+                                class="bi bi-box-arrow-in-right"></i> Login</a></li>
+                    <li class="nav-item ms-lg-2">
+                        <a class="btn btn-glass fw-semibold" href="{% url 'accounts:register' %}">
+                            <i class="bi bi-person-plus"></i> Sign Up
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ============== Flash Messages ============== -->
+    {% if messages %}
+    <div class="container mt-3">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show shadow-sm" role="alert">
+            <i class="bi bi-info-circle"></i> {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- ============== Main Content ============== -->
+    <main class="py-4">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- ============== Footer ============== -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-lg-4 col-md-6">
+                    <h5><i class="bi bi-globe-asia-australia"></i> GlobeTrek Adventures</h5>
+                    <p>Your trusted travel partner, crafting unforgettable journeys around the world. Based in the
+                        beautiful coastal town of Negombo, Sri Lanka.</p>
+                    <div class="social-icons mt-3">
+                        <a href="#" title="Facebook"><i class="bi bi-facebook"></i></a>
+                        <a href="#" title="Instagram"><i class="bi bi-instagram"></i></a>
+                        <a href="#" title="Twitter"><i class="bi bi-twitter"></i></a>
+                        <a href="#" title="YouTube"><i class="bi bi-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-6">
+                    <h5>Quick Links</h5>
+                    <ul>
+                        <li><a href="{% url 'core:home' %}">Home</a></li>
+                        <li><a href="{% url 'tours:package_list' %}">Tour Packages</a></li>
+                        <li><a href="{% url 'tours:destination_list' %}">Destinations</a></li>
+                        <li><a href="{% url 'core:about' %}">About Us</a></li>
+                        <li><a href="{% url 'core:contact' %}">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <h5>Support</h5>
+                    <ul>
+                        <li><a href="{% url 'core:contact' %}">Help Center</a></li>
+                        <li><a href="{% url 'inquiries:create' %}">Submit a Query</a></li>
+                        <li><a href="#">Terms & Conditions</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">FAQs</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <h5>Contact Us</h5>
+                    <ul>
+                        <li><i class="bi bi-geo-alt"></i> {{ COMPANY_ADDRESS }}</li>
+                        <li><i class="bi bi-telephone"></i> {{ COMPANY_PHONE }}</li>
+                        <li><i class="bi bi-envelope"></i> {{ COMPANY_EMAIL }}</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                &copy; {% now "Y" %} {{ COMPANY_NAME }}. All rights reserved. &mdash;
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="{% static 'js/main.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+
+</html>
