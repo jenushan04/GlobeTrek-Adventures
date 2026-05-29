@@ -300,5 +300,5 @@ If you like this project:
 ---
 
 <p align="center">
-  Made with ❤️ using Django & Bootstrap
+  Made with ❤️ using Django
 </p>
